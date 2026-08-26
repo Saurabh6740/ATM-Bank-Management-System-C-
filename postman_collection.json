@@ -1,0 +1,264 @@
+{
+	"info": {
+		"_postman_id": "atm-bank-mongodb-api-collection",
+		"name": "ATM & Bank Management MongoDB API",
+		"description": "Complete Postman Collection for APEX ATM & Bank System powered by MongoDB",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Check API & DB Status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/status",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["api", "status"]
+				}
+			}
+		},
+		{
+			"name": "2. Get All Accounts (MongoDB)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/accounts",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["api", "accounts"]
+				}
+			}
+		},
+		{
+			"name": "3. Get Single Account by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/account/rahul101",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["api", "account", "rahul101"]
+				}
+			}
+		},
+		{
+			"name": "4. Register New Account (MongoDB)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": \"vikas102\",\n  \"name\": \"Vikas Verma\",\n  \"fatherName\": \"Rajesh Verma\",\n  \"address\": \"Bhopal, India\",\n  \"pin\": \"44444\",\n  \"password\": \"pass123\",\n  \"phone\": \"9876543210\",\n  \"balance\": 10000\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/register",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["api", "register"]
+				}
+			}
+		},
+		{
+			"name": "5. Admin Security Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"cses@gmail.com\",\n  \"pin\": \"12345\",\n  \"password\": \"12345\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/login/admin",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["api", "login", "admin"]
+				}
+			}
+		},
+		{
+			"name": "6. User ATM PIN Authentication",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userId\": \"rahul101\",\n  \"pin\": \"12345\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/login/user",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["api", "login", "user"]
+				}
+			}
+		},
+		{
+			"name": "7. Deposit Money",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userId\": \"rahul101\",\n  \"amount\": 2000\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/deposit",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["api", "deposit"]
+				}
+			}
+		},
+		{
+			"name": "8. Withdraw Money",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userId\": \"rahul101\",\n  \"amount\": 1000\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/withdraw",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["api", "withdraw"]
+				}
+			}
+		},
+		{
+			"name": "9. P2P Fund Transfer",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"senderId\": \"rahul101\",\n  \"receiverId\": \"sonu9151\",\n  \"amount\": 500\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/transfer",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["api", "transfer"]
+				}
+			}
+		},
+		{
+			"name": "10. Pay Utility Bill",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userId\": \"rahul101\",\n  \"billName\": \"Electricity\",\n  \"amount\": 450\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/bill",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["api", "bill"]
+				}
+			}
+		},
+		{
+			"name": "11. Get All Bill Payments History",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/bills",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["api", "bills"]
+				}
+			}
+		},
+		{
+			"name": "12. Update Account Details",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Rahul Sharma Updated\",\n  \"fatherName\": \"Suresh Sharma\",\n  \"address\": \"Mumbai Central\",\n  \"pin\": \"12345\",\n  \"password\": \"newpass123\",\n  \"phone\": \"9876543210\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/account/rahul101",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["api", "account", "rahul101"]
+				}
+			}
+		},
+		{
+			"name": "13. Delete Account",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/account/rahul101",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["api", "account", "rahul101"]
+				}
+			}
+		}
+	]
+}

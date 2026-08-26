@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank & ATM Management System | Powered by MongoDB</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- TOP HEADER BAR -->
+        <header class="top-header">
+            <div class="brand">
+                <div class="logo-icon"><i class="fa-solid fa-building-columns"></i></div>
+                <div class="brand-text">
+                    <h1>APEX BANKING & ATM</h1>
+                    <span class="sub-brand">C++ Logic Engine &bull; MongoDB Database Integration</span>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <div class="db-status-badge" id="dbStatus">
+                    <span class="status-dot pulsing"></span>
+                    <span id="dbStatusText">Checking MongoDB...</span>
+                </div>
+                <div class="mode-switcher">
+                    <button class="nav-btn active" id="tabRegister" onclick="switchTab('register')">
+                        <i class="fa-solid fa-user-plus"></i> Open Account
+                    </button>
+                    <button class="nav-btn" id="tabAdmin" onclick="switchTab('admin')">
+                        <i class="fa-solid fa-user-shield"></i> Admin Panel
+                    </button>
+                    <button class="nav-btn" id="tabAtm" onclick="switchTab('atm')">
+                        <i class="fa-solid fa-credit-card"></i> ATM Machine
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="main-content">
+            
+            <!-- SECTION 1: PUBLIC NEW ACCOUNT REGISTRATION (Saves directly to MongoDB) -->
+            <section id="sectionRegister" class="tab-section active">
+                <div class="glass-card registration-hero">
+                    <div class="hero-header">
+                        <div class="badge"><i class="fa-solid fa-leaf"></i> Connected to MongoDB (localhost:27017)</div>
+                        <h2>Open a New Bank Account</h2>
+                        <p>Register your account details below. All data will be saved directly into your <strong>MongoDB database (atm_bank_db)</strong>.</p>
+                    </div>
+
+                    <form id="publicRegisterForm" class="grid-form" onsubmit="handlePublicRegister(event)">
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-id-badge"></i> Desired User ID * <small>(lowercase & numbers only)</small></label>
+                            <input type="text" id="regId" pattern="[a-z0-9]+" title="User ID must contain only lowercase letters and numbers (e.g. rahul101)" placeholder="e.g. rahul101" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-user"></i> Full Name *</label>
+                            <input type="text" id="regName" placeholder="e.g. Rahul Sharma" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-users"></i> Father's Name *</label>
+                            <input type="text" id="regFName" placeholder="e.g. Suresh Sharma" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-location-dot"></i> Address *</label>
+                            <input type="text" id="regAddress" placeholder="e.g. Mumbai, Maharashtra" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-key"></i> 5-Digit ATM PIN *</label>
+                            <input type="password" id="regPin" maxlength="5" pattern="\d{5}" placeholder="e.g. 12345" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-lock"></i> Account Password *</label>
+                            <input type="password" id="regPass" placeholder="Enter secure password" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-phone"></i> Phone Number *</label>
+                            <input type="tel" id="regPhone" placeholder="e.g. 9876543210" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-indian-rupee-sign"></i> Initial Deposit Balance (₹) *</label>
+                            <input type="number" id="regBalance" min="500" value="5000" placeholder="Minimum ₹500" required>
+                        </div>
+
+                        <div class="form-actions span-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fa-solid fa-database"></i> Register & Save to MongoDB
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- SECTION 2: ADMIN DASHBOARD (MongoDB Records & Banking Actions) -->
+            <section id="sectionAdmin" class="tab-section">
+                <!-- Admin Auth Modal Overlay if not logged in -->
+                <div id="adminAuthOverlay" class="auth-overlay">
+                    <div class="glass-card auth-card">
+                        <div class="auth-header">
+                            <i class="fa-solid fa-shield-halved auth-icon"></i>
+                            <h3>Admin Security Login</h3>
+                            <p>Default: cses@gmail.com / PIN: 12345 / Pass: 12345</p>
+                        </div>
+                        <form onsubmit="handleAdminLogin(event)">
+                            <div class="form-group">
+                                <label>Admin Email</label>
+                                <input type="email" id="adminEmail" value="cses@gmail.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Admin PIN Code</label>
+                                <input type="password" id="adminPin" value="12345" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Admin Password</label>
+                                <input type="password" id="adminPass" value="12345" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Login to Admin Panel</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Admin Dashboard View -->
+                <div id="adminDashboardContent" class="dashboard-grid">
+                    <!-- Stats Bar -->
+                    <div class="stats-row">
+                        <div class="stat-card">
+                            <div class="stat-icon emerald"><i class="fa-solid fa-users"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-label">Total Registered Accounts</span>
+                                <h3 id="statTotalUsers">0</h3>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon sapphire"><i class="fa-solid fa-vault"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-label">Total Vault Balance</span>
+                                <h3 id="statTotalBalance">₹0.00</h3>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon amber"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-label">Total Bill Payments</span>
+                                <h3 id="statTotalBills">0</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions Row -->
+                    <div class="actions-grid">
+                        <div class="glass-card action-card">
+                            <h3><i class="fa-solid fa-money-bill-trend-up"></i> Deposit Money</h3>
+                            <form onsubmit="handleAdminDeposit(event)">
+                                <input type="text" id="depId" placeholder="User ID" required>
+                                <input type="number" id="depAmount" placeholder="Amount (₹)" required>
+                                <button type="submit" class="btn btn-success"><i class="fa-solid fa-plus"></i> Deposit</button>
+                            </form>
+                        </div>
+
+                        <div class="glass-card action-card">
+                            <h3><i class="fa-solid fa-hand-holding-dollar"></i> Withdraw Money</h3>
+                            <form onsubmit="handleAdminWithdraw(event)">
+                                <input type="text" id="withAccId" placeholder="User ID" required>
+                                <input type="number" id="withAccAmount" placeholder="Amount (₹)" required>
+                                <button type="submit" class="btn btn-warning"><i class="fa-solid fa-minus"></i> Withdraw</button>
+                            </form>
+                        </div>
+
+                        <div class="glass-card action-card">
+                            <h3><i class="fa-solid fa-arrow-right-arrow-left"></i> P2P Transfer</h3>
+                            <form onsubmit="handleAdminTransfer(event)">
+                                <input type="text" id="trSender" placeholder="Sender ID" required>
+                                <input type="text" id="trReceiver" placeholder="Receiver ID" required>
+                                <input type="number" id="trAmount" placeholder="Amount (₹)" required>
+                                <button type="submit" class="btn btn-info"><i class="fa-solid fa-paper-plane"></i> Transfer</button>
+                            </form>
+                        </div>
+
+                        <div class="glass-card action-card">
+                            <h3><i class="fa-solid fa-receipt"></i> Pay Utility Bill</h3>
+                            <form onsubmit="handleAdminPayBill(event)">
+                                <input type="text" id="billUserId" placeholder="User ID" required>
+                                <select id="billType" required>
+                                    <option value="Electricity">Electricity</option>
+                                    <option value="Water">Water</option>
+                                    <option value="WiFi Internet">WiFi Internet</option>
+                                    <option value="Gas Cylinder">Gas Cylinder</option>
+                                </select>
+                                <input type="number" id="billAmount" placeholder="Amount (₹)" required>
+                                <button type="submit" class="btn btn-purple"><i class="fa-solid fa-check-double"></i> Pay Bill</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- MongoDB Live Accounts Table -->
+                    <div class="glass-card table-card">
+                        <div class="table-header">
+                            <div>
+                                <h3><i class="fa-solid fa-database"></i> Live Accounts Database (MongoDB)</h3>
+                                <p>Real-time records from <code>mongodb://localhost:27017/atm_bank_db</code></p>
+                            </div>
+                            <div class="table-search">
+                                <input type="text" id="searchAccount" placeholder="Search by ID or Name..." oninput="filterAccounts()">
+                                <button class="btn btn-secondary" onclick="loadAccountsFromDB()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>User ID</th>
+                                        <th>Account Holder</th>
+                                        <th>Father Name</th>
+                                        <th>Phone</th>
+                                        <th>Address</th>
+                                        <th>PIN</th>
+                                        <th>Balance (INR)</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="accountsTableBody">
+                                    <tr><td colspan="8" class="text-center">Loading accounts from MongoDB...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- MongoDB Bill Audit History Table -->
+                    <div class="glass-card table-card">
+                        <div class="table-header">
+                            <h3><i class="fa-solid fa-file-invoice"></i> Bill Payment History (MongoDB)</h3>
+                            <button class="btn btn-secondary" onclick="loadBillHistoryFromDB()"><i class="fa-solid fa-rotate"></i> Refresh History</button>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>User ID</th>
+                                        <th>Bill Type</th>
+                                        <th>Amount Paid</th>
+                                        <th>Date & Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="billsTableBody">
+                                    <tr><td colspan="4" class="text-center">Loading bill logs...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: ATM TERMINAL SIMULATOR -->
+            <section id="sectionAtm" class="tab-section">
+                <div class="atm-casing">
+                    <div class="atm-screen-container">
+                        <div class="atm-screen-header">
+                            <span class="atm-brand"><i class="fa-solid fa-building-columns"></i> APEX ATM TERMINAL</span>
+                            <span class="atm-clock" id="atmClock">00:00:00</span>
+                        </div>
+
+                        <!-- ATM Screen States -->
+                        <div class="atm-screen-body">
+                            <!-- Screen 1: Welcome & Card Insert / ID Entry -->
+                            <div id="atmScreenWelcome" class="atm-state active">
+                                <div class="atm-welcome-graphic">
+                                    <i class="fa-solid fa-credit-card fa-beat-fade"></i>
+                                </div>
+                                <h2>WELCOME TO APEX BANK ATM</h2>
+                                <p>Please enter your <strong>User ID</strong> to begin transaction</p>
+                                <div class="atm-input-group">
+                                    <input type="text" id="atmUserIdInput" placeholder="Enter User ID (e.g. sonu9151)">
+                                    <button class="btn btn-primary" onclick="proceedToPinEntry()">Proceed <i class="fa-solid fa-arrow-right"></i></button>
+                                </div>
+                            </div>
+
+                            <!-- Screen 2: PIN Entry -->
+                            <div id="atmScreenPin" class="atm-state">
+                                <h3>SECURITY PIN VERIFICATION</h3>
+                                <p>Welcome, <strong id="atmAccountName">User</strong>!</p>
+                                <p>Enter your 5-digit ATM PIN using the keypad below:</p>
+                                <div class="pin-display" id="pinDisplay">*****</div>
+                                <div class="attempts-badge" id="attemptsBadge">Attempts Remaining: 3</div>
+                            </div>
+
+                            <!-- Screen 3: ATM Main Menu -->
+                            <div id="atmScreenMenu" class="atm-state">
+                                <h3>MAIN MENU - Choose Transaction</h3>
+                                <div class="atm-menu-grid">
+                                    <button class="atm-menu-btn" onclick="atmCheckBalance()"><i class="fa-solid fa-wallet"></i> Check Balance</button>
+                                    <button class="atm-menu-btn" onclick="atmShowWithdrawForm()"><i class="fa-solid fa-money-bill-transfer"></i> Cash Withdrawal</button>
+                                    <button class="atm-menu-btn" onclick="atmShowQuickCash()"><i class="fa-solid fa-bolt"></i> Quick Cash presets</button>
+                                    <button class="atm-menu-btn" onclick="atmShowTransferForm()"><i class="fa-solid fa-paper-plane"></i> Fund Transfer</button>
+                                    <button class="atm-menu-btn" onclick="atmShowAccountDetails()"><i class="fa-solid fa-address-card"></i> Account Details</button>
+                                    <button class="atm-menu-btn btn-danger" onclick="atmExit()"><i class="fa-solid fa-door-open"></i> Exit ATM</button>
+                                </div>
+                            </div>
+
+                            <!-- Screen 4: Transaction & Output Screen -->
+                            <div id="atmScreenAction" class="atm-state">
+                                <h3 id="atmActionTitle">Transaction</h3>
+                                <div id="atmActionBody"></div>
+                                <button class="btn btn-secondary mt-3" onclick="atmReturnToMenu()"><i class="fa-solid fa-arrow-left"></i> Back to Main Menu</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ATM KEYPAD & CASH SLOT -->
+                    <div class="atm-hardware">
+                        <!-- Keypad -->
+                        <div class="atm-keypad">
+                            <button class="key-btn" onclick="keypadPress('1')">1</button>
+                            <button class="key-btn" onclick="keypadPress('2')">2</button>
+                            <button class="key-btn" onclick="keypadPress('3')">3</button>
+                            <button class="key-btn key-action cancel" onclick="keypadCancel()">CANCEL</button>
+
+                            <button class="key-btn" onclick="keypadPress('4')">4</button>
+                            <button class="key-btn" onclick="keypadPress('5')">5</button>
+                            <button class="key-btn" onclick="keypadPress('6')">6</button>
+                            <button class="key-btn key-action clear" onclick="keypadClear()">CLEAR</button>
+
+                            <button class="key-btn" onclick="keypadPress('7')">7</button>
+                            <button class="key-btn" onclick="keypadPress('8')">8</button>
+                            <button class="key-btn" onclick="keypadPress('9')">9</button>
+                            <button class="key-btn key-action enter" onclick="keypadEnter()">ENTER</button>
+
+                            <button class="key-btn" onclick="keypadPress('0')">0</button>
+                            <button class="key-btn" onclick="keypadPress('00')">00</button>
+                            <button class="key-btn" onclick="keypadPress('000')">000</button>
+                            <button class="key-btn dummy">&bull;</button>
+                        </div>
+
+                        <!-- Cash Dispenser Slot -->
+                        <div class="cash-slot-container">
+                            <span class="slot-label">CASH DISPENSER</span>
+                            <div class="cash-slot" id="cashSlot">
+                                <div class="cash-notes-animation" id="cashAnimation">
+                                    <div class="cash-note">₹500</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- TOAST NOTIFICATION POPUP -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Application Script -->
+    <script src="app.js"></script>
+</body>
+</html>

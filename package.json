@@ -1,0 +1,18 @@
+{
+  "name": "atm",
+  "version": "1.0.0",
+  "description": "An advanced, Object-Oriented **ATM & Bank Management System** written in **Modern C++ (C++17)**. Designed with modular architecture, robust file persistence, input security, ANSI color terminal interface, utility bill payment engine, and digital receipt generation.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "mongoose": "^9.9.4"
+  }
+}
