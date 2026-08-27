@@ -51,7 +51,7 @@
             <section id="sectionRegister" class="tab-section active">
                 <div class="glass-card registration-hero">
                     <div class="hero-header">
-                        <div class="badge"><i class="fa-solid fa-leaf"></i> Connected to MongoDB (localhost:27017)</div>
+                        <div class="badge" id="regDbBadge"><i class="fa-solid fa-leaf"></i> Connected to MongoDB</div>
                         <h2>Open a New Bank Account</h2>
                         <p>Register your account details below. All data will be saved directly into your <strong>MongoDB database (atm_bank_db)</strong>.</p>
                     </div>
@@ -63,35 +63,34 @@
                         </div>
                         <div class="form-group">
                             <label><i class="fa-solid fa-user"></i> Full Name *</label>
-                            <input type="text" id="regName" placeholder="e.g. Rahul Sharma" required>
+                            <input type="text" id="regName" placeholder="Full Name" required>
                         </div>
                         <div class="form-group">
-                            <label><i class="fa-solid fa-users"></i> Father's Name *</label>
-                            <input type="text" id="regFName" placeholder="e.g. Suresh Sharma" required>
+                            <label><i class="fa-solid fa-people-roof"></i> Father's Name *</label>
+                            <input type="text" id="regFName" placeholder="Father's Name" required>
                         </div>
                         <div class="form-group">
                             <label><i class="fa-solid fa-location-dot"></i> Address *</label>
-                            <input type="text" id="regAddress" placeholder="e.g. Mumbai, Maharashtra" required>
+                            <input type="text" id="regAddress" placeholder="Full Address" required>
                         </div>
                         <div class="form-group">
                             <label><i class="fa-solid fa-key"></i> 5-Digit ATM PIN *</label>
-                            <input type="password" id="regPin" maxlength="5" pattern="\d{5}" placeholder="e.g. 12345" required>
+                            <input type="password" id="regPin" maxlength="5" pattern="\d{5}" title="PIN must be exactly 5 digits" placeholder="5-digit PIN" required>
                         </div>
                         <div class="form-group">
                             <label><i class="fa-solid fa-lock"></i> Account Password *</label>
-                            <input type="password" id="regPass" placeholder="Enter secure password" required>
+                            <input type="password" id="regPass" placeholder="Account Password" required>
                         </div>
                         <div class="form-group">
                             <label><i class="fa-solid fa-phone"></i> Phone Number *</label>
-                            <input type="tel" id="regPhone" placeholder="e.g. 9876543210" required>
+                            <input type="tel" id="regPhone" placeholder="10-digit Phone Number" required>
                         </div>
                         <div class="form-group">
                             <label><i class="fa-solid fa-indian-rupee-sign"></i> Initial Deposit Balance (₹) *</label>
-                            <input type="number" id="regBalance" min="500" value="5000" placeholder="Minimum ₹500" required>
+                            <input type="number" id="regBalance" min="0" value="1000" placeholder="Minimum Deposit" required>
                         </div>
-
-                        <div class="form-actions span-2">
-                            <button type="submit" class="btn btn-primary btn-lg">
+                        <div class="form-full">
+                            <button type="submit" class="btn btn-primary btn-block">
                                 <i class="fa-solid fa-database"></i> Register & Save to MongoDB
                             </button>
                         </div>
@@ -107,20 +106,20 @@
                         <div class="auth-header">
                             <i class="fa-solid fa-shield-halved auth-icon"></i>
                             <h3>Admin Security Login</h3>
-                            <p>Default: cses@gmail.com / PIN: 12345 / Pass: 12345</p>
+                            <p>Enter authorized admin credentials to access system</p>
                         </div>
                         <form onsubmit="handleAdminLogin(event)">
                             <div class="form-group">
                                 <label>Admin Email</label>
-                                <input type="email" id="adminEmail" value="cses@gmail.com" required>
+                                <input type="email" id="adminEmail" placeholder="admin@apexbank.com" required>
                             </div>
                             <div class="form-group">
                                 <label>Admin PIN Code</label>
-                                <input type="password" id="adminPin" value="12345" required>
+                                <input type="password" id="adminPin" placeholder="5-digit PIN" required>
                             </div>
                             <div class="form-group">
                                 <label>Admin Password</label>
-                                <input type="password" id="adminPass" value="12345" required>
+                                <input type="password" id="adminPass" placeholder="Enter admin password" required>
                             </div>
                             <button type="submit" class="btn btn-primary btn-block">Login to Admin Panel</button>
                         </form>
@@ -205,7 +204,7 @@
                         <div class="table-header">
                             <div>
                                 <h3><i class="fa-solid fa-database"></i> Live Accounts Database (MongoDB)</h3>
-                                <p>Real-time records from <code>mongodb://localhost:27017/atm_bank_db</code></p>
+                                <p>Real-time records from MongoDB database</p>
                             </div>
                             <div class="table-search">
                                 <input type="text" id="searchAccount" placeholder="Search by ID or Name..." oninput="filterAccounts()">

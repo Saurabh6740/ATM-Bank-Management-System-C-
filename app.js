@@ -5,7 +5,10 @@
  * ============================================================================
  */
 
-const API_BASE_URL = 'http://localhost:8080/api';
+// Dynamic API_BASE_URL: automatically detects whether running locally or on a deployed host (Render, Vercel, etc.)
+const API_BASE_URL = (window.location.protocol === 'file:' || window.location.port === '5500' || window.location.port === '3000')
+    ? 'http://localhost:8080/api'
+    : `${window.location.origin}/api`;
 
 let currentAccounts = [];
 let isAdminLoggedIn = false;
@@ -25,21 +28,25 @@ document.addEventListener('DOMContentLoaded', () => {
 async function checkDBConnection() {
     const statusText = document.getElementById('dbStatusText');
     const dbBadge = document.getElementById('dbStatus');
+    const regBadge = document.getElementById('regDbBadge');
 
     try {
         const res = await fetch(`${API_BASE_URL}/status`);
         const data = await res.json();
 
         if (data.connected) {
-            statusText.innerText = 'Connected to MongoDB (localhost:27017)';
-            dbBadge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+            statusText.innerText = 'MongoDB Connected (Online)';
+            if (dbBadge) dbBadge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+            if (regBadge) regBadge.innerHTML = '<i class="fa-solid fa-leaf"></i> Connected to MongoDB';
         } else {
-            statusText.innerText = 'MongoDB Offline (Checking...)';
-            dbBadge.style.borderColor = 'rgba(244, 63, 94, 0.4)';
+            statusText.innerText = 'Server Online (MongoDB Offline)';
+            if (dbBadge) dbBadge.style.borderColor = 'rgba(234, 179, 8, 0.4)';
+            if (regBadge) regBadge.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> MongoDB Connecting...';
         }
     } catch (err) {
-        statusText.innerText = 'Server Offline (localhost:8080)';
-        dbBadge.style.borderColor = 'rgba(244, 63, 94, 0.4)';
+        statusText.innerText = 'Server Offline';
+        if (dbBadge) dbBadge.style.borderColor = 'rgba(244, 63, 94, 0.4)';
+        if (regBadge) regBadge.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Server Offline';
     }
 }
 
@@ -111,19 +118,30 @@ async function handlePublicRegister(e) {
 // ============================================================================
 // ADMIN PANEL MODULE
 // ============================================================================
-function handleAdminLogin(e) {
+async function handleAdminLogin(e) {
     e.preventDefault();
     const email = document.getElementById('adminEmail').value.trim();
     const pin = document.getElementById('adminPin').value.trim();
     const pass = document.getElementById('adminPass').value.trim();
 
-    if (email === 'cses@gmail.com' && pin === '12345' && pass === '12345') {
-        isAdminLoggedIn = true;
-        document.getElementById('adminAuthOverlay').style.display = 'none';
-        showToast('✅ Admin Login Successful!', 'success');
-        loadAdminDashboard();
-    } else {
-        showToast('❌ Invalid Admin Credentials!', 'error');
+    try {
+        const res = await fetch(`${API_BASE_URL}/login/admin`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, pin, password: pass })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            isAdminLoggedIn = true;
+            document.getElementById('adminAuthOverlay').style.display = 'none';
+            showToast('✅ Admin Login Successful!', 'success');
+            loadAdminDashboard();
+        } else {
+            showToast(`❌ ${data.message || 'Invalid Admin Credentials!'}`, 'error');
+        }
+    } catch (err) {
+        showToast('❌ Server error during admin login!', 'error');
     }
 }
 

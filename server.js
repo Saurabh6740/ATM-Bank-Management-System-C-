@@ -115,7 +115,11 @@ app.get('/api/status', async (req, res) => {
 // Admin Authentication
 app.post('/api/login/admin', (req, res) => {
     const { email, pin, password } = req.body;
-    if (email === 'cses@gmail.com' && pin === '12345' && password === '12345') {
+    const expectedEmail = process.env.ADMIN_EMAIL || 'admin@apexbank.com';
+    const expectedPin = process.env.ADMIN_PIN || '12345';
+    const expectedPassword = process.env.ADMIN_PASSWORD || 'Admin@123';
+
+    if (email === expectedEmail && pin === expectedPin && password === expectedPassword) {
         res.json({ success: true, message: 'Admin authenticated successfully', role: 'admin' });
     } else {
         res.status(401).json({ success: false, message: 'Invalid Admin Email, PIN, or Password' });
@@ -404,14 +408,16 @@ app.use((req, res) => {
 // ============================================================================
 // SERVER INITIALIZATION & MONGOOSE CONNECT
 // ============================================================================
+app.listen(PORT, () => {
+    console.log(`🚀 ATM & Bank REST API Server running on: http://localhost:${PORT} (Port: ${PORT})`);
+});
+
 mongoose.connect(MONGO_URI)
     .then(async () => {
-        console.log(`\n🍃 Connected to MongoDB database at: ${MONGO_URI}`);
+        console.log(`\n🍃 Connected to MongoDB database successfully: ${MONGO_URI}`);
         await seedDatabaseFromBankTxt();
-        app.listen(PORT, () => {
-            console.log(`🚀 ATM & Bank REST API Server running on: http://localhost:${PORT}`);
-        });
     })
     .catch(err => {
-        console.error(`❌ MongoDB Connection Error:`, err.message);
+        console.error(`❌ MongoDB Connection Warning:`, err.message);
+        console.log(`⚠️ Note: If deployed on Render, add a MONGO_URI environment variable pointing to your MongoDB Atlas cluster.`);
     });
